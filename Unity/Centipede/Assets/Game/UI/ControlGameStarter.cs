@@ -26,6 +26,9 @@ public class ControlGameStarter : MonoBehaviour
     private void ProcessAnyKeyPressed()
     {
         ResetCooldown();
+
+        // start new game
+        StateGameplay.Instance.ResetSessionProgression();
         AppStateManager.Instance.Start(StateGameplay.Instance, false);
     }
 }

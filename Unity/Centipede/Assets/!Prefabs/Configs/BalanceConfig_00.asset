@@ -12,13 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee5f3adea43369744b429cd92267071a, type: 3}
   m_Name: BalanceConfig_00
   m_EditorClassIdentifier: 
-  GridSize: {x: 0, y: 0}
-  ActiveAreaOffsetPercent: 0
-  MushroomsAmount: 0
-  MushroomsHitpoints: 0
+  GridSize: {x: 16, y: 16}
+  ActiveAreaOffsetPercent: 0.33
+  MushroomsAmount: 102
+  MushroomsHitpoints: 4
   PlayerSpeed: 1
-  PlayerBulletSpeed: 0
-  PlayerLifesAmount: 0
+  PlayerBulletSpeed: 1
   CentipedeSegmentsAmount: 0
   CentipedeSpeed: 0
   SpiderSpeed: 0

@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public interface IBoardEntity
 {
     GameConstants.CellType GetCellType();
     Vector2Int GetPosition();
-    Vector2Int SetPosition();
+    void SetPosition(Vector2Int pos, bool clearPrevPosition);
 }
