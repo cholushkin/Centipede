@@ -166,6 +166,7 @@ MonoBehaviour:
   IsSlideModeMovement: 1
   Speed: 1
   Follower: {fileID: 3500273651424873566}
+  DeathDuration: 1
 --- !u!114 &3500273651424873566
 MonoBehaviour:
   m_ObjectHideFlags: 0

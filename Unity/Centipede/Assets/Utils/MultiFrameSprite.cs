@@ -29,7 +29,6 @@ public class MultiFrameSprite : MonoBehaviour
     {
         if (IsPlayOnAwake)
             Play();
-
     }
 
     private void Play()
@@ -39,11 +38,22 @@ public class MultiFrameSprite : MonoBehaviour
         _currentState = State.Playing;
     }
 
-    private void SetFrame(int frameIndex)
+    public void SetFrame(int frameIndex)
     {
         _currentFrame = frameIndex;
         SpriteRenderer.sprite = Frames[frameIndex].Frame;
         _currentDelay = Frames[frameIndex].Delay;
+    }
+
+    public Sprite GetSprite(int frameIndex)
+    {
+        return Frames[frameIndex].Frame;
+    }
+
+    public void SetFrameClear()
+    {
+        _currentFrame = -1;
+        SpriteRenderer.sprite = null;
     }
 
     void Update()

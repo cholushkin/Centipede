@@ -55,4 +55,10 @@ public class Follower : MonoBehaviour
         _proxyTarget.transform.position = position;
         return _proxyTarget.transform;
     }
+
+    private void OnDestroy()
+    {
+        if (_proxyTarget != null)
+            Destroy(_proxyTarget);
+    }
 }

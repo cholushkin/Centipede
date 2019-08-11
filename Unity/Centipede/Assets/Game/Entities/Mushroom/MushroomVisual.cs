@@ -1,18 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MushroomVisual : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public MultiFrameSprite MultiSprite;
 
-    // Update is called once per frame
-    void Update()
+    public void ShowDamage(float f)
     {
-        
+        int frame = (int)((MultiSprite.Frames.Length-1) * f);
+
+        if (frame == MultiSprite.Frames.Length)
+        {
+            MultiSprite.SetFrameClear();
+            return;
+        }
+        MultiSprite.SetFrame(frame);
     }
 }

@@ -6,7 +6,7 @@ public class PlayerVisual : MonoBehaviour
 
     public void PlayDead()
     {
-        Instantiate(PrefabExplosion);
+        //Instantiate(PrefabExplosion);
         GetComponent<SpriteRenderer>().enabled = false;
     }
 

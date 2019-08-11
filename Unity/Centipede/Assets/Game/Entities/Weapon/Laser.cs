@@ -26,7 +26,12 @@ public class Laser : MonoBehaviour
         {
             case GameConstants.CellType.Centipede:
             {
-                break;
+                var centipede = cell.Entity as Centipede;
+                Assert.IsNotNull(cell.Entity);
+                Assert.IsNotNull(centipede, cell.Entity.GetType().ToString());
+                centipede.ApplyDamage(Damage, _boardPosition);
+                Die();
+                return;
             }
             case GameConstants.CellType.Mushroom:
             {
@@ -38,11 +43,7 @@ public class Laser : MonoBehaviour
             }
             case GameConstants.CellType.Spider:
             {
-                break;
-            }
-            case GameConstants.CellType.Wall:
-            {
-                break;
+                return;
             }
             case GameConstants.CellType.Undefined:
             {
@@ -50,19 +51,6 @@ public class Laser : MonoBehaviour
                 return;
             }
         }
-
-        //const float CollisionFactor = 0.25f;
-        //var enemies = Enemies.GetComponentsInChildren<BaseEnemy>();
-        //foreach (var enemy in enemies)
-        //{
-        //    var distance = (enemy.transform.position - transform.position).sqrMagnitude;
-        //    if (distance < CollisionFactor)
-        //    {
-        //        enemy.ReceiveDamage(Damage);
-        //        Destroy(gameObject);
-        //        return;
-        //    }
-        //}
     }
 
     private void Die()

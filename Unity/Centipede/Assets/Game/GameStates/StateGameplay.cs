@@ -1,5 +1,6 @@
 ﻿using Events;
 using GameGUI;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 public class StateGameplay : AppStateManager.AppState<StateGameplay>, IHandle<PlayerController.EventPlayerDie>
@@ -55,10 +56,11 @@ public class StateGameplay : AppStateManager.AppState<StateGameplay>, IHandle<Pl
         if (PlayerSessionData.PlayerLives <= 0) // game over
         {
             // show modal 'game over' window
-            
+            Debug.Log("game over");
         }
         else // respawn
         {
+            Level.RespawnOnlyEnemies();
             Level.SpawnPlayer();
         }
     }
@@ -69,6 +71,4 @@ public class StateGameplay : AppStateManager.AppState<StateGameplay>, IHandle<Pl
         PlayerSessionData = new SessionData();
         LevelManager.ResetProgression();
     }
-
-   
 }

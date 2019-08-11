@@ -4,8 +4,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-// Taken from https://www.talksharp.com/create-global-events-in-unity-games-with-an-eventaggregator
-
 namespace Events
 {
     public class EventAggregator

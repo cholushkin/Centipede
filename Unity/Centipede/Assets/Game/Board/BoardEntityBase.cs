@@ -3,20 +3,22 @@
 public abstract class BoardEntityBase : MonoBehaviour, IBoardEntity
 {
     public BoardController Board;
-    private Vector2Int _boardPosition;
+    protected Vector2Int _boardPosition;
 
     public abstract GameConstants.CellType GetCellType();
 
-    public virtual Vector2Int GetPosition()
+    public virtual Vector2Int GetBoardPosition()
     {
         return _boardPosition;
     }
 
-    public void SetPosition(Vector2Int pos, bool clearPrevPosition = true)
+    public virtual void SetBoardPosition(Vector2Int pos, bool clearPrevPosition = true)
     {
         if(clearPrevPosition)
             Board.CellAccessor.Set(_boardPosition, null);
         _boardPosition = pos;
         Board.CellAccessor.Set(_boardPosition, this);
     }
+
+    public abstract void Remove();
 }

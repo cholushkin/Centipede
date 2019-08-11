@@ -4,11 +4,10 @@
     {
         Empty = 0,
         Undefined = 1,
-        Wall = 2,
-        Mushroom = 3,
-        Player = 4,
-        Centipede = 5,
-        Spider = 6
+        Mushroom = 2,
+        Player = 3,
+        Centipede = 4,
+        Spider = 5
     }
 
     // player
@@ -18,5 +17,6 @@
     // board
     public static readonly float CellWidth = 0.09f;
     public static readonly float CellHeight = 0.1f;
-    public static readonly float InitialSpawningDelay = 0.05f;
+    public static readonly float InitialSpawningDelay = 0.01f;
+    public static readonly float LevelStartCentipedeSpawninDelay = 2f;
 }

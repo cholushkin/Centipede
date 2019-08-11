@@ -36,7 +36,7 @@ public class CellAccessor
     {
         if (!IsInside(x, y))
         {
-            Debug.LogWarningFormat("Trying to set value outside of the board. Coord({0},{1}), Value: {2}", x, y, entity.GetCellType());
+            //Debug.LogWarningFormat("Trying to set value outside of the board. Coord({0},{1}), Value: {2}", x, y, entity?.GetCellType().ToString()??"null");
             return;
         }
         _cells[x, y].Entity = entity;
@@ -58,7 +58,7 @@ public class CellAccessor
     {
         if (!IsInside(x, y))
         {
-            Debug.LogWarningFormat("Trying to get value outside of the board. Coord({0},{1}), Value: undefined", x, y);
+            //Debug.LogWarningFormat("Trying to get value outside of the board. Coord({0},{1}), Value: undefined", x, y);
             return CellUndefined;
         }
         return _cells[x, y];

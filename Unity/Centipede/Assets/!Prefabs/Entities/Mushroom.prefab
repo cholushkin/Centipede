@@ -93,8 +93,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f4b50d38b9895645adbaa3da6729b34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpriteRenderer: {fileID: 0}
-  Frames: []
+  SpriteRenderer: {fileID: 6661409078161448549}
+  Frames:
+  - Frame: {fileID: 21300006, guid: 9a6e2ca854e9ddf42ba2a961b9aa325d, type: 3}
+    Delay: 0
+  - Frame: {fileID: 21300008, guid: 9a6e2ca854e9ddf42ba2a961b9aa325d, type: 3}
+    Delay: 0
+  - Frame: {fileID: 21300010, guid: 9a6e2ca854e9ddf42ba2a961b9aa325d, type: 3}
+    Delay: 0
+  - Frame: {fileID: 21300012, guid: 9a6e2ca854e9ddf42ba2a961b9aa325d, type: 3}
+    Delay: 0
+  - Frame: {fileID: 21300014, guid: 9a6e2ca854e9ddf42ba2a961b9aa325d, type: 3}
+    Delay: 0
   IsLooped: 0
   IsPlayOnAwake: 0
 --- !u!114 &7493796036790711910
@@ -109,6 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93345dca6c9b7ae44a5d2df3beb29d20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MultiSprite: {fileID: 6621310410331227881}
 --- !u!1 &8303246992724143350
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,4 +164,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eabaa99c58003e46b4269abe69f19c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Board: {fileID: 0}
   Visual: {fileID: 7493796036790711910}
+  Hitpoints: 0
