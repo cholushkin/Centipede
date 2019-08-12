@@ -57,7 +57,7 @@ namespace Game
             if (PlayerSessionData.PlayerLives <= 0) // game over
             {
                 // show modal 'game over' window
-                Debug.Log("game over");
+                GameGUI.PushScreen("Screen.CommonPopup");
             }
             else // respawn
             {

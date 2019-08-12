@@ -115,4 +115,5 @@ MonoBehaviour:
   ScreensRoot: {fileID: 0}
   Screens:
   - {fileID: 9093251228208200115, guid: e51beb81aac415442b6d047084647942, type: 3}
-  - {fileID: 9093251228208200115, guid: c3382f7b16c1fc24d963ee1e32c8a6d7, type: 3}
+  - {fileID: 3373616534728789440, guid: c3382f7b16c1fc24d963ee1e32c8a6d7, type: 3}
+  - {fileID: 492735324159527362, guid: 856758de6b543cf47b8801353a9e53a8, type: 3}

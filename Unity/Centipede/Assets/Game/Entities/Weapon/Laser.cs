@@ -5,18 +5,17 @@ namespace Game
 {
     public class Laser : MonoBehaviour
     {
-        public BoardController Board;
-
         public float Speed;
         public float Damage;
 
         private Vector2Int _boardPosition;
+        private BoardController _board;
 
         public void Init(BoardController board, Vector3 pos)
         {
-            Board = board;
+            _board = board;
             transform.position = pos;
-            _boardPosition = Board.ToBoardPosition(transform.position);
+            _boardPosition = _board.ToBoardPosition(transform.position);
         }
 
         private void Update()
@@ -24,7 +23,7 @@ namespace Game
             var delta = Speed * Time.deltaTime;
             transform.position = new Vector3(transform.position.x, transform.position.y + delta, transform.position.z);
             var prevBoardPos = _boardPosition;
-            _boardPosition = Board.ToBoardPosition(transform.position);
+            _boardPosition = _board.ToBoardPosition(transform.position);
 
             // too fast bullet handling, to avoid cells skipping
             var oneFrameDistance = (_boardPosition - prevBoardPos).magnitude; // one frame distance in cells
@@ -35,7 +34,7 @@ namespace Game
 
         private bool ProcessCollisions(Vector2Int checkCoord)
         {
-            var cell = Board.CellAccessor.Get(checkCoord);
+            var cell = _board.CellAccessor.Get(checkCoord);
 
             switch (cell.CellType)
             {

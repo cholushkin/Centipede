@@ -98,7 +98,7 @@ namespace Game
             _nextSpiderCooldown = Balance.NextSpiderTimeout;
         }
 
-        #region Spawn entites
+        #region Entities factory
         public bool SpawnMushroom(Vector2Int pos)
         {
             if (pos.y == 0 || pos.y == Balance.GridSize.y - 1) // don't spawn on bottom and top line

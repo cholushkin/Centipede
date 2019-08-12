@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
-using Utils;
+using UnityEngine.Events;
 
 namespace Game.UI
 {
-    public class ControlGameStarter : MonoBehaviour
+    public class AnyKeyWithDelayHandler : MonoBehaviour
     {
-        [Range(1f, 5f)]
+        public UnityEvent OnAnyKeyPressed;
+
+        [Range(0.25f, 3f)]
         public float Cooldown;
         private float _currentCooldown;
 
@@ -29,8 +31,7 @@ namespace Game.UI
         private void ProcessAnyKeyPressed()
         {
             ResetCooldown();
-
-          
+            OnAnyKeyPressed.Invoke();
         }
     }
 }
