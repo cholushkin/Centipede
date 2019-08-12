@@ -1,150 +1,158 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
+using Utils;
 
-public class PlayerController : BoardEntityBase
+namespace Game
 {
-    public class EventPlayerDie
+    public class PlayerController : BoardEntityBase
     {
-    }
-
-    public enum State
-    {
-        Alive,
-        Dead
-    }
-    public Weapon Weapon;
-    public PlayerVisual Visual;
-    public bool IsSlideModeMovement;
-    public float Speed;
-    public Follower Follower;
-    public float DeathDuration;
-
-    private Vector3 _positionPointer;
-    private int _maxTopY;
-    private State _currentState;
-    private float _deathTimer;
-    private Vector3 _inputMove;
-    private bool _inputIsShoot;
-    private bool _isInjuredDuringMovement;
-
-    public void Init( Vector2Int boardPos, BoardController board, int activeArea)
-    {
-        _currentState = State.Alive;
-        Board = board;
-        Weapon.Board = Board;
-        SetBoardPosition(boardPos, false);
-        transform.position = Board.ToWorldPosition(boardPos);
-        SetActiveArea(activeArea);
-        _positionPointer = transform.position;
-    }
-
-    void Update()
-    {
-        // process death
-        if (_currentState == State.Dead)
+        public class EventPlayerDie
         {
-            _deathTimer -= Time.deltaTime;
-            if (_deathTimer < 0f)
+        }
+
+        public enum State
+        {
+            Alive,
+            Dead
+        }
+
+        public Weapon Weapon;
+        public PlayerVisual Visual;
+        public bool IsSlideModeMovement;
+        public float Speed;
+        public Follower Follower;
+        public float DeathDuration;
+
+        private Vector3 _positionPointer;
+        private int _maxTopY;
+        private State _currentState;
+        private float _deathTimer;
+        private Vector3 _inputMove;
+        private bool _inputIsShoot;
+        private bool _isInjuredDuringMovement;
+
+        public void Init(Vector2Int boardPos, BoardController board, int activeArea)
+        {
+            _currentState = State.Alive;
+            Board = board;
+            Weapon.Board = Board;
+            SetBoardPosition(boardPos, false);
+            transform.position = Board.ToWorldPosition(boardPos);
+            SetActiveArea(activeArea);
+            _positionPointer = transform.position;
+        }
+
+        void Update()
+        {
+            // process death
+            if (_currentState == State.Dead)
             {
-                GlobalEventAggregator.EventAggregator.Publish(new EventPlayerDie());
-                Destroy(gameObject);
+                _deathTimer -= Time.deltaTime;
+                if (_deathTimer < 0f)
+                {
+                    GlobalEventAggregator.EventAggregator.Publish(new EventPlayerDie());
+                    Destroy(gameObject);
+                }
+            }
+            else if (_currentState == State.Alive)
+            {
+                ProcessInput();
+
+                if (_inputIsShoot)
+                {
+                    Assert.IsNotNull(Weapon);
+                    Weapon.Shoot(Vector3.up);
+                }
+
+                _isInjuredDuringMovement = false;
+                var isMoved = false;
+                if (IsSlideModeMovement)
+                    isMoved = ProcessMovement(_inputMove) || ProcessMovement(new Vector3(0, _inputMove.y, 0)) ||
+                              ProcessMovement(new Vector3(_inputMove.x, 0, 0));
+                else
+                    isMoved = ProcessMovement(_inputMove);
+
+                //// debug seppuku // todo: remove me
+                //if (Input.GetKeyDown(KeyCode.S))
+                //    _isInjuredDuringMovement = true;
+
+                if (_isInjuredDuringMovement)
+                    Remove();
             }
         }
-        else if (_currentState == State.Alive)
+
+        private void ProcessInput()
         {
-            ProcessInput();
+            // shoot
+            _inputIsShoot = Input.GetKey(KeyCode.Space);
 
-            if (_inputIsShoot)
+            // move
+            _inputMove = Vector3.zero;
+            if (Input.GetKey(KeyCode.LeftArrow))
+                _inputMove += Vector3.left;
+            if (Input.GetKey(KeyCode.RightArrow))
+                _inputMove += Vector3.right;
+            if (Input.GetKey(KeyCode.UpArrow))
+                _inputMove += Vector3.up;
+            if (Input.GetKey(KeyCode.DownArrow))
+                _inputMove += Vector3.down;
+        }
+
+
+        private bool ProcessMovement(Vector3 offset)
+        {
+            var newPositionPointer = _positionPointer + offset * Speed * Time.deltaTime;
+            var newBoardPos = Board.ToBoardPosition(newPositionPointer);
+            var cell = Board.CellAccessor.Get(newBoardPos);
+
+            // restrict by screen edges
+            var isOut = cell.CellType == GameConstants.CellType.Undefined;
+            if (isOut)
+                return false;
+
+            // restrict by _maxTopY
+            if (newBoardPos.y >= _maxTopY)
+                return false;
+
+            // mushroom?
+            if (cell.CellType == GameConstants.CellType.Mushroom)
+                return false;
+
+            // enemy?
+            if (cell.CellType == GameConstants.CellType.Centipede || cell.CellType == GameConstants.CellType.Spider)
             {
-                Assert.IsNotNull(Weapon);
-                Weapon.Shoot(Vector3.up);
-            }
-
-            _isInjuredDuringMovement = false;
-            var isMoved = false;
-            if (IsSlideModeMovement)
-                isMoved = ProcessMovement(_inputMove) || ProcessMovement(new Vector3(0, _inputMove.y, 0)) || ProcessMovement(new Vector3(_inputMove.x, 0, 0));
-            else
-                isMoved = ProcessMovement(_inputMove);
-
-            // debug seppuku // todo: remove me
-            if (Input.GetKeyDown(KeyCode.S))
                 _isInjuredDuringMovement = true;
+                return false;
+            }
 
-            if(_isInjuredDuringMovement)
-                Remove();
+            SetBoardPosition(newBoardPos);
+
+            _positionPointer = newPositionPointer;
+            Follower.Follow(_positionPointer);
+            return true;
         }
-    }
 
-    private void ProcessInput()
-    {
-        // shoot
-        _inputIsShoot = Input.GetKey(KeyCode.Space);
-
-        // move
-        _inputMove = Vector3.zero;
-        if (Input.GetKey(KeyCode.LeftArrow))
-            _inputMove += Vector3.left;
-        if (Input.GetKey(KeyCode.RightArrow))
-            _inputMove += Vector3.right;
-        if (Input.GetKey(KeyCode.UpArrow))
-            _inputMove += Vector3.up;
-        if (Input.GetKey(KeyCode.DownArrow))
-            _inputMove += Vector3.down;
-    }
-
-    
-    private bool ProcessMovement(Vector3 offset)
-    {
-        var newPositionPointer = _positionPointer + offset * Speed * Time.deltaTime;
-        var newBoardPos = Board.ToBoardPosition(newPositionPointer);
-        var cell = Board.CellAccessor.Get(newBoardPos);
-
-        // restrict by screen edges
-        var isOut = cell.CellType == GameConstants.CellType.Undefined;
-        if(isOut)
-            return false;
-
-        // restrict by _maxTopY
-        if( newBoardPos.y >= _maxTopY )
-            return false;
-
-        // mushroom?
-        if (cell.CellType == GameConstants.CellType.Mushroom)
-            return false;
-
-        // enemy?
-        if (cell.CellType == GameConstants.CellType.Centipede || cell.CellType == GameConstants.CellType.Spider)
+        private void SetActiveArea(int maxTopY)
         {
-            _isInjuredDuringMovement = true;
-            return false;
+            _maxTopY = maxTopY;
         }
 
-        SetBoardPosition(newBoardPos);
+        #region BoardEntityBase
+        public override GameConstants.CellType GetCellType()
+        {
+            return GameConstants.CellType.Player;
+        }
 
-        _positionPointer = newPositionPointer;
-        Follower.Follow(_positionPointer);
-        return true;
+        public override void Remove()
+        {
+            if (_currentState == State.Dead)
+                return;
+            Debug.Log("Dead");
+            _currentState = State.Dead;
+            Visual.PlayDead();
+            Board.CellAccessor.Set(_boardPosition, null);
+            _deathTimer = DeathDuration;
+        }
+        #endregion
     }
-
-    private void SetActiveArea(int maxTopY)
-    {
-        _maxTopY = maxTopY;
-    }
-
-    #region BoardEntityBase
-    public override GameConstants.CellType GetCellType()
-    {
-        return GameConstants.CellType.Player;
-    }
-
-    public override void Remove()
-    {
-        Debug.Log("Dead");
-        _currentState = State.Dead;
-        Visual.PlayDead();
-        Board.CellAccessor.Set(_boardPosition, null);
-        _deathTimer = DeathDuration;
-    }
-    #endregion
 }

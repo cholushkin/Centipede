@@ -1,18 +1,22 @@
 ﻿using UnityEngine;
+using Utils;
 
-public class MushroomVisual : MonoBehaviour
+namespace Game
 {
-    public MultiFrameSprite MultiSprite;
-
-    public void ShowDamage(float f)
+    public class MushroomVisual : MonoBehaviour
     {
-        int frame = (int)((MultiSprite.Frames.Length-1) * f);
+        public MultiFrameSprite MultiSprite;
 
-        if (frame == MultiSprite.Frames.Length)
+        public void ShowDamage(float f)
         {
-            MultiSprite.SetFrameClear();
-            return;
+            int frame = (int) ((MultiSprite.Frames.Length - 1) * f);
+
+            if (frame == MultiSprite.Frames.Length)
+            {
+                MultiSprite.SetFrameClear();
+                return;
+            }
+            MultiSprite.SetFrame(frame);
         }
-        MultiSprite.SetFrame(frame);
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace WaveProcessor
+namespace Utils
 {
     public class SimpleWaveProcessor<T> where T : IComparable<T>
     {
@@ -19,6 +19,7 @@ namespace WaveProcessor
         private int MapHeight;
         private List<Wave> Waves;
         private sbyte CurWaveIndex;
+        private Vector2Int _target;
 
         public class Wave
         {
@@ -72,6 +73,36 @@ namespace WaveProcessor
             return val.CompareTo(DefFuncWallValue) == 0;
         }
 
+        public void SetTarget(Vector2Int target)
+        {
+            _target = target;
+        }
+
+        private Vector2Int _pbPointer; // path builder pointer
+        public List<Vector2Int> GetPath()
+        {
+            List<Vector2Int> path = new List<Vector2Int>();
+            _pbPointer = _target;
+            var isAdded = true;
+            while (isAdded)
+            {
+                var curNodeValue = Data[_pbPointer.x, _pbPointer.y];
+                isAdded = false;
+                for (sbyte i = 0; i < 4; ++i)
+                {
+                    var tp = _pbPointer + dirs[i];
+                    if (IsInsideMap(tp) && !IsValue(tp, Wall) && Data[tp.x, tp.y] < curNodeValue)
+                    {
+                        _pbPointer = tp;
+                        isAdded = true;
+                        path.Add(_pbPointer);
+                        break;
+                    }
+                }
+            }
+            return path;
+        }
+
         public void Clear()
         {
             CurWaveIndex = 0;
@@ -114,6 +145,8 @@ namespace WaveProcessor
                 var neig = GetNotVisitedNeighbours(waveCell);
                 foreach (var neigCell in neig)
                 {
+                    if (neigCell == _target)
+                        _pbPointer = neigCell;
                     curWave.Cells.Add(neigCell);
                     Data[neigCell.x, neigCell.y] = CurWaveIndex;
                 }
@@ -123,10 +156,10 @@ namespace WaveProcessor
 
         private static readonly Vector2Int[] dirs =
         {
-            new Vector2Int(0, -1),
-            new Vector2Int(0, 1),
             new Vector2Int(-1, 0),
-            new Vector2Int(1, 0)
+            new Vector2Int(1, 0),
+            new Vector2Int(0, -1),
+            new Vector2Int(0, 1)
         };
 
         private List<Vector2Int> GetNotVisitedNeighbours(Vector2Int cell)

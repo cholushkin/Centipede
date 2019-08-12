@@ -1,60 +1,70 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 
-public class BoardController : MonoBehaviour
+namespace Game
 {
-    public CellAccessor CellAccessor;
-    public Transform TransformMushrooms;
-    public Transform TransformEnemies;
-
-    public Vector2Int ToBoardPosition(Vector3 worldPosition)
+    public class BoardController : MonoBehaviour
     {
-        return new Vector2Int(
-            Mathf.RoundToInt((worldPosition.x / GameConstants.CellWidth)),
-            Mathf.RoundToInt((worldPosition.y / GameConstants.CellHeight))
-        );
-    }
+        public CellAccessor CellAccessor;
+        public Transform TransformMushrooms;
+        public Transform TransformEnemies;
 
-    public Vector3 ToWorldPosition(Vector2Int boardCoordinates)
-    {
-        return new Vector3(
-            boardCoordinates.x * GameConstants.CellWidth,
-            boardCoordinates.y * GameConstants.CellHeight,
-            0f);
-    }
+        public Vector2Int ToBoardPosition(Vector3 worldPosition)
+        {
+            return new Vector2Int(
+                Mathf.RoundToInt((worldPosition.x / GameConstants.CellWidth)),
+                Mathf.RoundToInt((worldPosition.y / GameConstants.CellHeight))
+            );
+        }
 
-    public void PurgeEnemies()
-    {
-        // delete old
-        Destroy(TransformEnemies.gameObject);
+        public Vector3 ToWorldPosition(Vector2Int boardCoordinates)
+        {
+            return new Vector3(
+                boardCoordinates.x * GameConstants.CellWidth,
+                boardCoordinates.y * GameConstants.CellHeight,
+                0f);
+        }
 
-        // create new
-        var newEnemiesOwner = new GameObject(TransformEnemies.name);
-        newEnemiesOwner.transform.SetParent(transform);
-        TransformEnemies = newEnemiesOwner.transform;
-    }
+        public void PurgeEnemies()
+        {
+            // delete old
+            Destroy(TransformEnemies.gameObject);
 
-    public void SetGrid(Vector2Int gridSize)
-    {
-        CellAccessor = new CellAccessor(gridSize);
-    }
+            // create new
+            var newEnemiesOwner = new GameObject(TransformEnemies.name);
+            newEnemiesOwner.transform.SetParent(transform);
+            TransformEnemies = newEnemiesOwner.transform;
+        }
 
-    void OnDrawGizmos()
-    {
-        if (!Application.isPlaying)
-            return;
-        Gizmos.color = Color.red;
-        for (int x = 0; x < CellAccessor.BoardSize.x; ++x)
-            for (int y = 0; y < CellAccessor.BoardSize.y; ++y)
-            {
-                Gizmos.color = Color.black;
-                if (CellAccessor.Get(x,y).CellType == GameConstants.CellType.Empty)
-                    Gizmos.color = Color.white;
-                if (CellAccessor.Get(x, y).CellType == GameConstants.CellType.Centipede)
-                    Gizmos.color = Color.magenta;
-                if (CellAccessor.Get(x, y).CellType == GameConstants.CellType.Player)
-                    Gizmos.color = Color.yellow;
+        public void SetGrid(Vector2Int gridSize)
+        {
+            CellAccessor = new CellAccessor(gridSize);
+        }
 
-                Gizmos.DrawCube(new Vector3(x * GameConstants.CellWidth, y * GameConstants.CellHeight, 0), Vector3.one * 0.02f);
-            }
+        void OnDrawGizmos()
+        {
+            if (!Application.isPlaying)
+                return;
+            Gizmos.color = Color.red;
+            for (int x = 0; x < CellAccessor.BoardSize.x; ++x)
+                for (int y = 0; y < CellAccessor.BoardSize.y; ++y)
+                {
+                    Gizmos.color = Color.black;
+                    if (CellAccessor.Get(x, y).CellType == GameConstants.CellType.Empty)
+                        Gizmos.color = Color.white;
+                    if (CellAccessor.Get(x, y).CellType == GameConstants.CellType.Centipede)
+                        Gizmos.color = Color.magenta;
+                    if (CellAccessor.Get(x, y).CellType == GameConstants.CellType.Spider)
+                        Gizmos.color = Color.red;
+                    if (CellAccessor.Get(x, y).CellType == GameConstants.CellType.Player)
+                        Gizmos.color = Color.yellow;
+
+                    Gizmos.DrawCube(new Vector3(x * GameConstants.CellWidth, y * GameConstants.CellHeight, 0),
+                        Vector3.one * 0.02f);
+                    Handles.color = Color.yellow;
+                    //Handles.Label(new Vector3(x * GameConstants.CellWidth, y * GameConstants.CellHeight, 0),
+                    //    x.ToString() + ":" + y.ToString());
+                }
+        }
     }
 }

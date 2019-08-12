@@ -1,4 +1,4 @@
-﻿namespace Events
+﻿namespace Utils
 {
     public interface IHandle
     {

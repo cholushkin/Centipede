@@ -111,6 +111,8 @@ MonoBehaviour:
     type: 3}
   PrefabCentipede: {fileID: 5491493853944927072, guid: da563ba841b27ad4cbfb285549a5b3f2,
     type: 3}
+  PrefabSpider: {fileID: 8169925068147397173, guid: 6c33d8c9cc6634a42b2b475b9c7bd336,
+    type: 3}
 --- !u!1 &6758209849313899600
 GameObject:
   m_ObjectHideFlags: 0

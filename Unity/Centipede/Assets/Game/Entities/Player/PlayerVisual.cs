@@ -6,12 +6,6 @@ public class PlayerVisual : MonoBehaviour
 
     public void PlayDead()
     {
-        //Instantiate(PrefabExplosion);
         GetComponent<SpriteRenderer>().enabled = false;
-    }
-
-    public void PlayGodMode()
-    {
-        // todo:
     }
 }

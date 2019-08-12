@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GridSize: {x: 24, y: 24}
   ActiveAreaOffsetPercent: 0.33
-  MushroomsAmount: 37
+  MushroomsAmount: 10
   MushroomsHitpoints: 4
   PlayerSpeed: 1
   PlayerBulletSpeed: 4.46

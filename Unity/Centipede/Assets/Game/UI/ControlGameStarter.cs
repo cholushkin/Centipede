@@ -1,34 +1,38 @@
 ﻿using UnityEngine;
+using Utils;
 
-public class ControlGameStarter : MonoBehaviour
+namespace Game.UI
 {
-    [Range(1f,5f)]
-    public float Cooldown;
-    private float _currentCooldown;
-
-    void OnEnable()
+    public class ControlGameStarter : MonoBehaviour
     {
-        ResetCooldown();
-    }
+        [Range(1f, 5f)]
+        public float Cooldown;
+        private float _currentCooldown;
 
-    void Update()
-    {
-        _currentCooldown -= Time.deltaTime;
-        if (Input.anyKey && _currentCooldown < 0f)
-            ProcessAnyKeyPressed();
-    }
+        void OnEnable()
+        {
+            ResetCooldown();
+        }
 
-    private void ResetCooldown()
-    {
-        _currentCooldown = Cooldown;
-    }
+        void Update()
+        {
+            _currentCooldown -= Time.deltaTime;
+            if (Input.anyKey && _currentCooldown < 0f)
+                ProcessAnyKeyPressed();
+        }
 
-    private void ProcessAnyKeyPressed()
-    {
-        ResetCooldown();
+        private void ResetCooldown()
+        {
+            _currentCooldown = Cooldown;
+        }
 
-        // start new game
-        StateGameplay.Instance.ResetSessionProgression();
-        AppStateManager.Instance.Start(StateGameplay.Instance, false);
+        private void ProcessAnyKeyPressed()
+        {
+            ResetCooldown();
+
+            // start new game
+            StateGameplay.Instance.ResetSessionProgression();
+            AppStateManager.Instance.Start(StateGameplay.Instance, false);
+        }
     }
 }

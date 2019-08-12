@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace GameGUI
+namespace Utils
 {
     public class SimpleGUI : MonoBehaviour
     {

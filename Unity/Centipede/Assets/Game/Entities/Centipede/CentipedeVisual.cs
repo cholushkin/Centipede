@@ -1,15 +1,20 @@
 ﻿using UnityEngine;
+using Utils;
 
-public class CentipedeVisual : MonoBehaviour
+namespace Game
 {
-    public MultiFrameSprite MultiSprite;
-    public GameObject CreateVisualSegment(bool isHead)
+    public class CentipedeVisual : MonoBehaviour
     {
-        var visSegment = new GameObject("Segment");
-        visSegment.transform.SetParent(transform);
-        var spriteRenderer = visSegment.AddComponent<SpriteRenderer>();
-        spriteRenderer.sprite = isHead ? MultiSprite.GetSprite(0) : MultiSprite.GetSprite(1);
-        visSegment.transform.localScale *= isHead ? 1.6f : 1.7f;
-        return visSegment;
+        public MultiFrameSprite MultiSprite;
+
+        public GameObject CreateVisualSegment(bool isHead)
+        {
+            var visSegment = new GameObject("Segment");
+            visSegment.transform.SetParent(transform);
+            var spriteRenderer = visSegment.AddComponent<SpriteRenderer>();
+            spriteRenderer.sprite = isHead ? MultiSprite.GetSprite(0) : MultiSprite.GetSprite(1);
+            visSegment.transform.localScale *= isHead ? 1.6f : 1.7f;
+            return visSegment;
+        }
     }
 }

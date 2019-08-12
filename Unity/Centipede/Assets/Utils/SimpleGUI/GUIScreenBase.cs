@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace GameGUI
+namespace Utils
 {
     public class GUIScreenBase : MonoBehaviour
     {

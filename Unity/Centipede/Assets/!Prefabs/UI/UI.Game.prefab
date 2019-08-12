@@ -113,4 +113,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartingScreenName: 
   ScreensRoot: {fileID: 0}
-  Screens: []
+  Screens:
+  - {fileID: 9093251228208200115, guid: e51beb81aac415442b6d047084647942, type: 3}
+  - {fileID: 9093251228208200115, guid: c3382f7b16c1fc24d963ee1e32c8a6d7, type: 3}

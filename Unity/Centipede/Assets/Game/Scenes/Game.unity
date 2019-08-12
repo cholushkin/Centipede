@@ -366,16 +366,5 @@ PrefabInstance:
       propertyPath: GameGUI
       value: 
       objectReference: {fileID: 2416813116048514559}
-    - target: {fileID: 5664574566609978256, guid: d43ab2f2c17e6304d9758af38ea4f17d,
-        type: 3}
-      propertyPath: Configs.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5664574566609978256, guid: d43ab2f2c17e6304d9758af38ea4f17d,
-        type: 3}
-      propertyPath: Configs.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: 9516a37bbff62a44b82a250c8a0472f0,
-        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d43ab2f2c17e6304d9758af38ea4f17d, type: 3}

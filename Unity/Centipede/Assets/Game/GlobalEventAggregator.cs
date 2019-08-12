@@ -1,6 +1,9 @@
-﻿using Events;
+﻿using Utils;
 
-public static class GlobalEventAggregator
+namespace Game
 {
-    public static EventAggregator EventAggregator = new EventAggregator();
+    public static class GlobalEventAggregator
+    {
+        public static EventAggregator EventAggregator = new EventAggregator();
+    }
 }

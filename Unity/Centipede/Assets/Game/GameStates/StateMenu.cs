@@ -1,22 +1,25 @@
-﻿using GameGUI;
-using UnityEngine.Assertions;
+﻿using UnityEngine.Assertions;
+using Utils;
 
-public class StateMenu : AppStateManager.AppState<StateMenu>
+namespace Game
 {
-    public SimpleGUI GameGUI;
-
-    #region AppStates
-    public override void AppStateEnter(bool animated)
+    public class StateMenu : AppStateManager.AppState<StateMenu>
     {
-        Assert.IsNotNull(GameGUI);
-        gameObject.SetActive(true);
-        GameGUI.PushScreen("Screen.Menu");
-    }
+        public SimpleGUI GameGUI;
 
-    public override void AppStateLeave(bool animated)
-    {
-        gameObject.SetActive(false);
-        GameGUI.PopScreen(); // Screen.Menu
+        #region AppStates
+        public override void AppStateEnter(bool animated)
+        {
+            Assert.IsNotNull(GameGUI);
+            gameObject.SetActive(true);
+            GameGUI.PushScreen("Screen.Menu");
+        }
+
+        public override void AppStateLeave(bool animated)
+        {
+            gameObject.SetActive(false);
+            GameGUI.PopScreen(); // Screen.Menu
+        }
+        #endregion
     }
-    #endregion
 }
