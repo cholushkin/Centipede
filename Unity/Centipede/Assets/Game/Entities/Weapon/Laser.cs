@@ -5,6 +5,7 @@ namespace Game
 {
     public class Laser : MonoBehaviour
     {
+        public GameObject[] PrefabExplosions;
         public float Speed;
         public float Damage;
 
@@ -43,8 +44,8 @@ namespace Game
                         var centipede = cell.Entity as Centipede;
                         Assert.IsNotNull(cell.Entity);
                         Assert.IsNotNull(centipede, cell.Entity.GetType().ToString());
-                        //centipede.DbgPrintState();
                         centipede.ApplyDamage(Damage, checkCoord);
+                        DoExplosion(1, _board.ToWorldPosition(checkCoord));
                         Die();
                         return true;
                     }
@@ -53,6 +54,7 @@ namespace Game
                         var mushroom = cell.Entity as Mushroom;
                         Assert.IsNotNull(mushroom);
                         mushroom.ApplyDamage(Damage);
+                        DoExplosion(0, _board.ToWorldPosition(checkCoord));
                         Die();
                         return true;
                     }
@@ -61,6 +63,7 @@ namespace Game
                         var spider = cell.Entity as Spider;
                         Assert.IsNotNull(spider);
                         spider.ApplyDamage(Damage);
+                        DoExplosion(2, _board.ToWorldPosition(checkCoord));
                         Die();
                         return true;
                     }
@@ -76,6 +79,13 @@ namespace Game
         private void Die()
         {
             Destroy(gameObject);
+        }
+
+        private void DoExplosion(int effectIndex, Vector3 at)
+        {
+            var explosion = Instantiate(PrefabExplosions[effectIndex]);
+            explosion.transform.position = at;
+            Destroy(explosion, 2f);
         }
     }
 }
