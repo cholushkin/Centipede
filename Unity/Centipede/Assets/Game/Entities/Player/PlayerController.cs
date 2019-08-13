@@ -31,14 +31,15 @@ namespace Game
         private bool _inputIsShoot;
         private bool _isInjuredDuringMovement;
 
-        public void Init(Vector2Int boardPos, BoardController board, int activeArea)
+        public void Init(Vector2Int boardPos, BoardController board, BalanceConfig config)
         {
             _currentState = State.Alive;
             Board = board;
             Weapon.Board = Board;
+            Weapon.BulletSpeed = config.PlayerBulletSpeed;
             SetBoardPosition(boardPos, false);
             transform.position = Board.ToWorldPosition(boardPos);
-            SetActiveArea(activeArea);
+            SetActiveArea(Mathf.RoundToInt(config.GridSize.y * config.ActiveAreaOffsetPercent));
             _positionPointer = transform.position;
         }
 

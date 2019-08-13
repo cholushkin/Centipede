@@ -166,10 +166,7 @@ namespace Game
                 destCell.Entity.Remove();
 
             Player = Instantiate(PrefabPlayerController, Board.transform);
-            Player.Init(
-                rndPosition,
-                Board,
-                Mathf.RoundToInt(Balance.GridSize.y * Balance.ActiveAreaOffsetPercent));
+            Player.Init( rndPosition, Board, Balance);
             Player.name = PrefabPlayerController.name;
         }
         #endregion

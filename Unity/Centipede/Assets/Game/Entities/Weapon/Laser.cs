@@ -5,18 +5,19 @@ namespace Game
 {
     public class Laser : MonoBehaviour
     {
-        public GameObject[] PrefabExplosions;
-        public float Speed;
         public float Damage;
+        public GameObject[] PrefabExplosions;
+        public float Speed { get; set; }
 
         private Vector2Int _boardPosition;
         private BoardController _board;
 
-        public void Init(BoardController board, Vector3 pos)
+        public void Init(BoardController board, Vector3 pos, float speed)
         {
             _board = board;
             transform.position = pos;
             _boardPosition = _board.ToBoardPosition(transform.position);
+            Speed = speed;
         }
 
         private void Update()

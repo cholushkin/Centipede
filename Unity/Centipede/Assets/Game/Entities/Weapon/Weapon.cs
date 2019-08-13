@@ -11,6 +11,7 @@ namespace Game
     {
         public Laser PrefabLaserBullet;
         public BoardController Board { get; set; }
+        public float BulletSpeed { get; set; }
         private Laser _bullet;
 
         public void Shoot(Vector3 direction)
@@ -19,7 +20,7 @@ namespace Game
                 return;
 
             _bullet = Instantiate(PrefabLaserBullet);
-            _bullet.Init(Board, transform.position);
+            _bullet.Init(Board, transform.position, BulletSpeed);
         }
     }
 }

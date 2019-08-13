@@ -15,15 +15,14 @@ public class BalanceConfig : ScriptableObject
     public int MushroomsAmount;
 
     [Range(1, 10)]
+    [Tooltip("One laser hit = one hit point")]
     public int MushroomsHitpoints;
 
     [Header("----- Player parameters")]
     // ------------------------------------------------------
-    [Tooltip("cells/sec.")]
     [Range(1, 10)]
     public float PlayerSpeed;
 
-    [Tooltip("cells/sec.")]
     [Range(1, 10)]
     public float PlayerBulletSpeed;
 
@@ -32,7 +31,6 @@ public class BalanceConfig : ScriptableObject
     [Range(1, 100)]
     public int CentipedeSegmentsAmount;
 
-    [Tooltip("cells/sec.")]
     [Range(0.01f, 1f)]
     public float CentipedeSpeed;
 
