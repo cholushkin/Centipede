@@ -37,6 +37,7 @@ namespace Game
             Board = board;
             Weapon.Board = Board;
             Weapon.BulletSpeed = config.PlayerBulletSpeed;
+            Speed = config.PlayerSpeed;
             SetBoardPosition(boardPos, false);
             transform.position = Board.ToWorldPosition(boardPos);
             SetActiveArea(Mathf.RoundToInt(config.GridSize.y * config.ActiveAreaOffsetPercent));

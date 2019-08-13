@@ -20,7 +20,7 @@ public class BalanceConfig : ScriptableObject
 
     [Header("----- Player parameters")]
     // ------------------------------------------------------
-    [Range(1, 10)]
+    [Range(0.1f, 3f)]
     public float PlayerSpeed;
 
     [Range(1, 10)]
