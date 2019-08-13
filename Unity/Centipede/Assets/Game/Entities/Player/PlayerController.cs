@@ -22,10 +22,10 @@ namespace Game
         public float Speed;
         public Follower Follower;
         public float DeathDuration;
+        public State CurrentState { get; private set; }
 
         private Vector3 _positionPointer;
         private int _maxTopY;
-        private State _currentState;
         private float _deathTimer;
         private Vector3 _inputMove;
         private bool _inputIsShoot;
@@ -33,7 +33,7 @@ namespace Game
 
         public void Init(Vector2Int boardPos, BoardController board, BalanceConfig config)
         {
-            _currentState = State.Alive;
+            CurrentState = State.Alive;
             Board = board;
             Weapon.Board = Board;
             Weapon.BulletSpeed = config.PlayerBulletSpeed;
@@ -46,8 +46,10 @@ namespace Game
 
         void Update()
         {
+            if(StateGameplay.Instance.IsWin)
+                return;
             // process death
-            if (_currentState == State.Dead)
+            if (CurrentState == State.Dead)
             {
                 _deathTimer -= Time.deltaTime;
                 if (_deathTimer < 0f)
@@ -56,7 +58,7 @@ namespace Game
                     Destroy(gameObject);
                 }
             }
-            else if (_currentState == State.Alive)
+            else if (CurrentState == State.Alive)
             {
                 ProcessInput();
 
@@ -73,10 +75,6 @@ namespace Game
                               ProcessMovement(new Vector3(_inputMove.x, 0, 0));
                 else
                     isMoved = ProcessMovement(_inputMove);
-
-                //// debug seppuku // todo: remove me
-                //if (Input.GetKeyDown(KeyCode.S))
-                //    _isInjuredDuringMovement = true;
 
                 if (_isInjuredDuringMovement)
                     Remove();
@@ -147,10 +145,9 @@ namespace Game
 
         public override void Remove()
         {
-            if (_currentState == State.Dead)
+            if (CurrentState == State.Dead)
                 return;
-            Debug.Log("Dead");
-            _currentState = State.Dead;
+            CurrentState = State.Dead;
             Visual.PlayDead();
             Board.CellAccessor.Set(_boardPosition, null);
             _deathTimer = DeathDuration;

@@ -32,10 +32,12 @@ public class BalanceConfig : ScriptableObject
     public int CentipedeSegmentsAmount;
 
     [Range(0.01f, 1f)]
-    public float CentipedeSpeed;
+    [Tooltip("Reflects speed of the centipede")]
+    public float CentipedeStepDelay;
 
     [Header("----- Spider parameters")]
     // ------------------------------------------------------
-    public float SpiderSpeed;
+    [Range(0.01f, 1f)]
+    public float SpiderStepDelay;
     public float NextSpiderTimeout;
 }

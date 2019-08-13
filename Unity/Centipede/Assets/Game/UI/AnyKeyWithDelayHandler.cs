@@ -19,7 +19,7 @@ namespace Game.UI
         void Update()
         {
             _currentCooldown -= Time.deltaTime;
-            if (Input.anyKey && _currentCooldown < 0f)
+            if (Input.anyKeyDown && _currentCooldown < 0f)
                 ProcessAnyKeyPressed();
         }
 

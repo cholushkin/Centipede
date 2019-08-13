@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using Utils;
+using Random = UnityEngine.Random;
 
 namespace Game
 {
@@ -30,19 +31,23 @@ namespace Game
 
         public void Update()
         {
-            // process enemies spawning
-            _nextSpiderCooldown -= Time.deltaTime;
-            _nextCentipedCooldown -= Time.deltaTime;
-            if (_nextSpiderCooldown < 0f)
-            {
-                if (SpawnSpider())
-                    _nextSpiderCooldown = 777f; // todo: from balance
+            if (StateGameplay.Instance.IsWin)
+                return;
 
-            }
-            if (_nextCentipedCooldown < 0f)
+            // process enemies spawning by timer
             {
-                _nextCentipedCooldown = 777f; // todo: from balance
-                SpawnCentipede();
+                _nextSpiderCooldown -= Time.deltaTime;
+                _nextCentipedCooldown -= Time.deltaTime;
+                if (_nextSpiderCooldown < 0f)
+                {
+                    if (SpawnSpider())
+                        _nextSpiderCooldown = float.PositiveInfinity; // controlled by EventSpiderDied
+                }
+                if (_nextCentipedCooldown < 0f)
+                {
+                    _nextCentipedCooldown = float.PositiveInfinity;
+                    SpawnCentipede();
+                }
             }
         }
 
@@ -121,7 +126,7 @@ namespace Game
                 Balance.GridSize.y - 1);
             var centipede = Instantiate(PrefabCentipede, Board.TransformEnemies) as Centipede;
             centipede.Init(
-                Balance.CentipedeSpeed,
+                Balance.CentipedeStepDelay,
                 Balance.CentipedeSegmentsAmount,
                 rndPosition,
                 Board);
@@ -129,13 +134,12 @@ namespace Game
             centipede.name = PrefabCentipede.name;
         }
 
-        public void SpawnCentipede(Centipede.Segment head, Centipede.Segment tail,
-            Vector2Int moveDirection) // for split spawning
+        public void SpawnCentipede(Centipede.Segment head, Centipede.Segment tail, Vector2Int moveDirection) // for split spawning
         {
             Assert.IsNotNull(head);
             var centipede = Instantiate(PrefabCentipede, Board.TransformEnemies) as Centipede;
             centipede.Init(
-                Balance.CentipedeSpeed, // todo: speed increase for splited cents
+                Balance.CentipedeStepDelay, // todo: speed increase for splited cents
                 head, tail, Board, moveDirection);
             centipede.SetActiveArea(Mathf.RoundToInt(Balance.GridSize.y * Balance.ActiveAreaOffsetPercent));
             centipede.name = PrefabCentipede.name;
@@ -153,7 +157,7 @@ namespace Game
 
 
             var spider = Instantiate(PrefabSpider, Board.TransformEnemies) as Spider;
-            spider.Init(Balance.SpiderSpeed, spiderSpawnPosition, Board);
+            spider.Init(Balance.SpiderStepDelay, spiderSpawnPosition, Board);
             spider.name = PrefabSpider.name;
             return true;
         }
@@ -166,7 +170,7 @@ namespace Game
                 destCell.Entity.Remove();
 
             Player = Instantiate(PrefabPlayerController, Board.transform);
-            Player.Init( rndPosition, Board, Balance);
+            Player.Init(rndPosition, Board, Balance);
             Player.name = PrefabPlayerController.name;
         }
         #endregion

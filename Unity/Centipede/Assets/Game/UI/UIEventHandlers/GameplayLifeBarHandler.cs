@@ -2,7 +2,7 @@
 
 namespace Game.UI
 {
-    public class GameplayControlLifeBarHandler : MonoBehaviour
+    public class GameplayLifeBarHandler : MonoBehaviour
     {
         public ControlLifeBar LifeBar;
 

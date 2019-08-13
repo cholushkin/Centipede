@@ -9,6 +9,10 @@ namespace Game
         {
             public bool IsHead;
         }
+        public class EventCentipedeKilled
+        {
+        }
+
         public class Segment
         {
             public Segment(Centipede centipede, Vector2Int pos, Segment nextSegment)
@@ -95,6 +99,7 @@ namespace Game
         private float _currentStepCooldown;
         private int _waitCounter;
         private int _vertStepsCount;
+        private bool _isKilled;
         private static readonly int WaitStepsMax = 10;
 
 
@@ -147,6 +152,12 @@ namespace Game
             //    ApplyDamage(1f, _tail.GetBoardPosition());
         }
 
+        public void OnDestroy()
+        {
+            if(_isKilled)
+                GlobalEventAggregator.EventAggregator.Publish(new EventCentipedeKilled());
+        }
+
         public void ApplyDamage(float damage, Vector2Int boardPosition)
         {
             //Debug.LogFormat("Damage {0} ->SPLITTING ", boardPosition);
@@ -176,10 +187,14 @@ namespace Game
                     if (headOfSnake2 != null)
                         StateGameplay.Instance.Level.SpawnCentipede(headOfSnake2, tailOfSnake2, _lastVerticalDirection);
 
+                    if (_tail == null) // split point is the head of the snake
+                    {
+                        Destroy(gameObject);
+                        _isKilled = true;
+                    }
+
                     GlobalEventAggregator.EventAggregator.Publish(new EventDestroyCentipedeSegment { IsHead = _tail == null });
 
-                    if (_tail == null) // split point is the head of the snake
-                        Destroy(gameObject);
                     return;
                 }
                 pointer = pointer.Prev;
@@ -187,8 +202,7 @@ namespace Game
             Assert.IsTrue(false);
         }
 
-        private Vector2Int
-            StepHorizOrVert() // returns next step destination coordinates or current coordinates if the centipede have to wait
+        private Vector2Int StepHorizOrVert() // returns next step destination coordinates or current coordinates if the centipede have to wait
         {
             var destination = _boardPosition + _lastHorizontalDirection;
 

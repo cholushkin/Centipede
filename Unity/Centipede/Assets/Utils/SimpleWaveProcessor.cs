@@ -17,7 +17,7 @@ namespace Utils
 
         private int MapWidth;
         private int MapHeight;
-        private List<Wave> Waves;
+        public List<Wave> Waves { get; private set; }
         private sbyte CurWaveIndex;
         private Vector2Int _target;
 
@@ -112,22 +112,15 @@ namespace Utils
                     Data[x, y] = WallFunc(Map[x, y]) ? Wall : NotVisited;
         }
 
-        public List<Wave> GetWaves()
-        {
-            return Waves;
-        }
-
         public void ComputeWaves(Vector2Int epicentre)
         {
-            Assert.IsTrue(IsInsideMap(epicentre), string.Format("ComputeWaves: epicentre {0} is outside the map.", epicentre));
-
-            // --- add first wave
+            // add first wave
             Wave wave = new Wave();
             Data[epicentre.x, epicentre.y] = 0;
             wave.Cells.Add(epicentre);
 
 
-            // --- compute waves
+            // compute waves
             do
             {
                 Waves.Add(wave);

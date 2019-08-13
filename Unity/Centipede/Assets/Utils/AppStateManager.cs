@@ -67,7 +67,7 @@ namespace Utils
             Debug.LogFormat("Starting state '{0}'", state.GetName());
             if (_currenState != null && _currenState == state)
             {
-                Debug.LogWarning("Restarting same state");
+                //Debug.LogWarning("Restarting same state");
             }
 
             var nextState = _ownedStates.FirstOrDefault(s => s == state);
@@ -82,12 +82,6 @@ namespace Utils
             if (_currenState != null)
                 _currenState.AppStateEnter(animated);
         }
-
-        //[ContextMenu("DbgPrintCurrentState")]
-        //void DbgPrintCurrentState()
-        //{
-        //    Debug.Log(GetCurrentState());
-        //}
 
         public IAppState GetCurrentState()
         {

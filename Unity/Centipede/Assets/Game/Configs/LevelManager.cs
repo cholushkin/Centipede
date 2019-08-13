@@ -13,8 +13,13 @@ public class LevelManager : MonoBehaviour
 
     public BalanceConfig GetNext()
     {
-        var cfg = Configs[_configIndex];
+        var cfg = Configs[_configIndex++];
         _configIndex = Mathf.Clamp(_configIndex, 0, Configs.Count - 1);
         return cfg;
+    }
+
+    public int GetCurrentLevelIndex()
+    {
+        return _configIndex;
     }
 }
