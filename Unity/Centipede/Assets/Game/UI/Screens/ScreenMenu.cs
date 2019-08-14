@@ -1,12 +1,14 @@
-﻿using Game;
-using Utils;
+﻿using Utils;
 
-public class ScreenMenu : GUIScreenBase
+namespace Game.UI
 {
-    public void OnAnyKeyPressed()
+    public class ScreenMenu : GUIScreenBase
     {
-        // start new game
-        StateGameplay.Instance.ResetSessionProgression();
-        AppStateManager.Instance.Start(StateGameplay.Instance, false);
+        public void OnAnyKeyPressed()
+        {
+            // start new game
+            StateGameplay.Instance.ResetSessionProgression();
+            AppStateManager.Instance.Start(StateGameplay.Instance, false);
+        }
     }
 }

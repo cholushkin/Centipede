@@ -15,7 +15,7 @@ namespace Game
 
         public StateGameplay Gameplay;
 
-        public void Awake()
+        private void Awake()
         {
             GlobalEventAggregator.EventAggregator.Subscribe(this);
         }

@@ -3,6 +3,7 @@ using Utils;
 
 namespace Game
 {
+    [RequireComponent(typeof(MultiFrameSprite))]
     public class CentipedeVisual : MonoBehaviour
     {
         public MultiFrameSprite MultiSprite;

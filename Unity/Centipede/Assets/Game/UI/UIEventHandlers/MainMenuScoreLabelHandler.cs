@@ -1,5 +1,6 @@
-﻿using Game.UI;
-
-public class MainMenuScoreLabelHandler : GameplayScoreLabelHandler
+﻿namespace Game.UI
 {
+    public class MainMenuScoreLabelHandler : GameplayScoreLabelHandler
+    {
+    }
 }

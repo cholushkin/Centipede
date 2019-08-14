@@ -38,12 +38,12 @@ namespace Game
             {
                 _nextSpiderCooldown -= Time.deltaTime;
                 _nextCentipedCooldown -= Time.deltaTime;
-                if (_nextSpiderCooldown < 0f)
+                if (_nextSpiderCooldown < 0f && !_isInCoroutineSpawnField)
                 {
                     if (SpawnSpider())
                         _nextSpiderCooldown = float.PositiveInfinity; // controlled by EventSpiderDied
                 }
-                if (_nextCentipedCooldown < 0f)
+                if (_nextCentipedCooldown < 0f && !_isInCoroutineSpawnField)
                 {
                     _nextCentipedCooldown = float.PositiveInfinity;
                     SpawnCentipede();
@@ -75,26 +75,30 @@ namespace Game
             _nextSpiderCooldown = GameConstants.LevelStartSpiderSpawninDelay;
         }
 
+        private bool _isInCoroutineSpawnField;
         IEnumerator CoroutineSpawnField()
         {
+            _isInCoroutineSpawnField = true;
             // create field
             Board.SetGrid(Balance.GridSize);
             CameraGameplay.Instance.FocusOnBoardCenter();
 
-            // spawn random mushrooms
+            // spawn random mushrooms (but before first centipede appearing)
+            var oneMushroomSpawnDelay = GameConstants.LevelStartCentipedeSpawninDelay / Balance.MushroomsAmount;
             for (int i = 0; i < Balance.MushroomsAmount; i++)
             {
                 Vector2Int rndPosition = new Vector2Int(
                     (int)Mathf.Round((Balance.GridSize.x - 1) * Random.value),
                     (int)Mathf.Round((Balance.GridSize.y - 1) * Random.value));
                 if (SpawnMushroom(rndPosition))
-                    yield return new WaitForSeconds(GameConstants.InitialSpawningDelay);
+                    yield return new WaitForSeconds(oneMushroomSpawnDelay);
             }
 
             // create player
             yield return new WaitForSeconds(GameConstants.InitialSpawningDelay);
             SpawnPlayer();
 
+            _isInCoroutineSpawnField = false;
             yield return null;
         }
 
@@ -152,9 +156,9 @@ namespace Game
             var destCell = Board.CellAccessor.Get(spiderSpawnPosition); // if something was spawned there
             if (destCell.CellType == GameConstants.CellType.Mushroom)
                 destCell.Entity.Remove();
+
             if (destCell.CellType == GameConstants.CellType.Centipede)
                 return false;
-
 
             var spider = Instantiate(PrefabSpider, Board.TransformEnemies) as Spider;
             spider.Init(Balance.SpiderStepDelay, spiderSpawnPosition, Board);

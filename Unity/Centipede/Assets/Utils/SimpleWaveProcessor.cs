@@ -119,7 +119,6 @@ namespace Utils
             Data[epicentre.x, epicentre.y] = 0;
             wave.Cells.Add(epicentre);
 
-
             // compute waves
             do
             {
@@ -131,6 +130,7 @@ namespace Utils
         private Wave PrepareWave(Wave prevWave)
         {
             Wave curWave = new Wave();
+            Assert.IsTrue(CurWaveIndex < sbyte.MaxValue, "the field is too big (consider Data as int array)");
             ++CurWaveIndex;
 
             foreach (var waveCell in prevWave.Cells)

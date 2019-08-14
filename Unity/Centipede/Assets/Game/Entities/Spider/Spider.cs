@@ -11,9 +11,9 @@ namespace Game
         {
         }
 
-        private static SimpleWaveProcessor<int> _waveProcessor;
-        private static int[,] _map;
-        private static readonly int Wall = 1;
+        private static SimpleWaveProcessor<sbyte> _waveProcessor;
+        private static sbyte[,] _map;
+        private const sbyte Wall = 1;
 
         private float _stepDelay;
         private Vector2Int _prevTargetPos = new Vector2Int(-1, -1);
@@ -22,36 +22,30 @@ namespace Game
         private float _currentStepCooldown;
         private float _attackinTimer;
 
-        public void Init(float stepDelay, Vector2Int boardPos, BoardController board)
-        {
-            Assert.IsTrue(stepDelay != 0f);
-            Board = board;
-            _stepDelay = stepDelay;
-            _currentStepCooldown = _stepDelay;
-            SetBoardPosition(boardPos, false);
-        }
-
-        void Awake()
+       private void Awake()
         {
             var currentMapSize = StateGameplay.Instance.Level.Balance.GridSize;
-            _map = new int[currentMapSize.x, currentMapSize.y];
-            _waveProcessor = new SimpleWaveProcessor<int>(_map, val => val == Wall);
+            _map = new sbyte[currentMapSize.x, currentMapSize.y];
+            _waveProcessor = new SimpleWaveProcessor<sbyte>(_map, val => val == Wall);
         }
 
-        void Update()
+        private void Update()
         {
             // move to target
             _currentStepCooldown -= Time.deltaTime;
             if (_currentStepCooldown < 0f)
             {
-                _currentStepCooldown = _stepDelay; // wait for next step
-                SetBoardPosition(_nextStep);
-                _nextStep = GetNextStep();
+                if (Board.CellAccessor.Get(_nextStep).CellType == GameConstants.CellType.Empty)
+                {
+                    _currentStepCooldown = _stepDelay; // wait for next step
+                    SetBoardPosition(_nextStep);
+                    _nextStep = GetNextStep();
+                }
             }
 
             // get player
             var player = StateGameplay.Instance.Level.Player;
-            if (player.CurrentState == PlayerController.State.Dead)
+            if (player == null || player.CurrentState == PlayerController.State.Dead)
                 return;
 
             // attacking the player
@@ -67,6 +61,16 @@ namespace Game
             _path = CalculatePath();
             GetNextStep(); // remove one node from the path
             _nextStep = GetNextStep();
+        }
+
+        public void Init(float stepDelay, Vector2Int boardPos, BoardController board)
+        {
+            Assert.IsTrue(stepDelay > 0f);
+            Board = board;
+            _stepDelay = stepDelay;
+            _currentStepCooldown = _stepDelay;
+            SetBoardPosition(boardPos, false);
+            _nextStep = _boardPosition;
         }
 
         private Vector2Int GetNextStep()
@@ -94,7 +98,7 @@ namespace Game
                 {
                     _map[x, y] = 0;
                     var cell = Board.CellAccessor.Get(x, y);
-                    if (cell.CellType != GameConstants.CellType.Empty && cell.CellType != GameConstants.CellType.Player)
+                    if (cell.CellType == GameConstants.CellType.Mushroom)
                         _map[x, y] = Wall;
                 }
         }

@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GridSize: {x: 16, y: 16}
   ActiveAreaOffsetPercent: 0.284
-  MushroomsAmount: 65
+  MushroomsAmount: 45
   MushroomsHitpoints: 4
   PlayerSpeed: 1
-  PlayerBulletSpeed: 6
+  PlayerBulletSpeed: 2.75
   CentipedeSegmentsAmount: 12
-  CentipedeStepDelay: 0.3
-  SpiderStepDelay: 0
-  NextSpiderTimeout: 5
+  CentipedeStepDelay: 0.25
+  SpiderStepDelay: 0.2
+  NextSpiderTimeout: 8

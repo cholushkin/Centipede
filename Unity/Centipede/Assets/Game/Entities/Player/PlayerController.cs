@@ -27,24 +27,11 @@ namespace Game
         private Vector3 _positionPointer;
         private int _maxTopY;
         private float _deathTimer;
-        private Vector3 _inputMove;
-        private bool _inputIsShoot;
+        private Vector3 _inputMoveOffset;
+        private bool _inputIsShooting;
         private bool _isInjuredDuringMovement;
 
-        public void Init(Vector2Int boardPos, BoardController board, BalanceConfig config)
-        {
-            CurrentState = State.Alive;
-            Board = board;
-            Weapon.Board = Board;
-            Weapon.BulletSpeed = config.PlayerBulletSpeed;
-            Speed = config.PlayerSpeed;
-            SetBoardPosition(boardPos, false);
-            transform.position = Board.ToWorldPosition(boardPos);
-            SetActiveArea(Mathf.RoundToInt(config.GridSize.y * config.ActiveAreaOffsetPercent));
-            _positionPointer = transform.position;
-        }
-
-        void Update()
+        private void Update()
         {
             if(StateGameplay.Instance.IsWin)
                 return;
@@ -62,7 +49,7 @@ namespace Game
             {
                 ProcessInput();
 
-                if (_inputIsShoot)
+                if (_inputIsShooting)
                 {
                     Assert.IsNotNull(Weapon);
                     Weapon.Shoot(Vector3.up);
@@ -71,33 +58,50 @@ namespace Game
                 _isInjuredDuringMovement = false;
                 var isMoved = false;
                 if (IsSlideModeMovement)
-                    isMoved = ProcessMovement(_inputMove) || ProcessMovement(new Vector3(0, _inputMove.y, 0)) ||
-                              ProcessMovement(new Vector3(_inputMove.x, 0, 0));
+                    isMoved = ProcessMovement(_inputMoveOffset) || ProcessMovement(new Vector3(0, _inputMoveOffset.y, 0)) ||
+                              ProcessMovement(new Vector3(_inputMoveOffset.x, 0, 0));
                 else
-                    isMoved = ProcessMovement(_inputMove);
+                    isMoved = ProcessMovement(_inputMoveOffset);
 
                 if (_isInjuredDuringMovement)
                     Remove();
             }
         }
 
+        public void Init(Vector2Int boardPos, BoardController board, BalanceConfig config)
+        {
+            CurrentState = State.Alive;
+            Board = board;
+            Weapon.Board = Board;
+            Weapon.BulletSpeed = config.PlayerBulletSpeed;
+            Speed = config.PlayerSpeed;
+            SetBoardPosition(boardPos, false);
+            transform.position = Board.ToWorldPosition(boardPos);
+            SetActiveArea(Mathf.RoundToInt(config.GridSize.y * config.ActiveAreaOffsetPercent));
+            _positionPointer = transform.position;
+        }
+
+        private void SetActiveArea(int maxTopY)
+        {
+            _maxTopY = maxTopY;
+        }
+
         private void ProcessInput()
         {
             // shoot
-            _inputIsShoot = Input.GetKey(KeyCode.Space);
+            _inputIsShooting = Input.GetKey(KeyCode.Space);
 
             // move
-            _inputMove = Vector3.zero;
+            _inputMoveOffset = Vector3.zero;
             if (Input.GetKey(KeyCode.LeftArrow))
-                _inputMove += Vector3.left;
+                _inputMoveOffset += Vector3.left;
             if (Input.GetKey(KeyCode.RightArrow))
-                _inputMove += Vector3.right;
+                _inputMoveOffset += Vector3.right;
             if (Input.GetKey(KeyCode.UpArrow))
-                _inputMove += Vector3.up;
+                _inputMoveOffset += Vector3.up;
             if (Input.GetKey(KeyCode.DownArrow))
-                _inputMove += Vector3.down;
+                _inputMoveOffset += Vector3.down;
         }
-
 
         private bool ProcessMovement(Vector3 offset)
         {
@@ -110,7 +114,7 @@ namespace Game
             if (isOut)
                 return false;
 
-            // restrict by _maxTopY
+            // restrict by _maxTopY (active area)
             if (newBoardPos.y >= _maxTopY)
                 return false;
 
@@ -130,11 +134,6 @@ namespace Game
             _positionPointer = newPositionPointer;
             Follower.Follow(_positionPointer);
             return true;
-        }
-
-        private void SetActiveArea(int maxTopY)
-        {
-            _maxTopY = maxTopY;
         }
 
         #region BoardEntityBase

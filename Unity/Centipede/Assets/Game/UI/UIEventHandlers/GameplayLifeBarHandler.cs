@@ -6,7 +6,7 @@ namespace Game.UI
     {
         public ControlLifeBar LifeBar;
 
-        void Update()
+        private void Update()
         {
             // instead of event handling we just directly access needed values for this demo
             var valueToShow = StateGameplay.Instance.PlayerSessionData.PlayerLives;

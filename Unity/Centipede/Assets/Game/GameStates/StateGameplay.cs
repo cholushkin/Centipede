@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.Assertions;
+﻿using UnityEngine.Assertions;
 using Utils;
 
 namespace Game
@@ -32,6 +31,12 @@ namespace Game
         {
             base.Awake();
             GlobalEventAggregator.EventAggregator.Subscribe(this);
+        }
+
+        public void ResetSessionProgression()
+        {
+            PlayerSessionData = new SessionData();
+            LevelManager.ResetProgression();
         }
 
         #region AppStates
@@ -88,11 +93,5 @@ namespace Game
             }
         }
         #endregion
-
-        public void ResetSessionProgression()
-        {
-            PlayerSessionData = new SessionData();
-            LevelManager.ResetProgression();
-        }
     }
 }

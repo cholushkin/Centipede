@@ -6,10 +6,10 @@ namespace Game.UI
     {
         public ControlScoreLabel ScoreLabel;
 
-        void Update()
+        private void Update()
         {
             // instead of event handling we just directly access needed values for this demo
-            if(StateGameplay.Instance.PlayerSessionData==null)
+            if (StateGameplay.Instance.PlayerSessionData == null)
                 return;
             var valueToShow = StateGameplay.Instance.PlayerSessionData.Scores;
             ScoreLabel.SetScore(valueToShow);

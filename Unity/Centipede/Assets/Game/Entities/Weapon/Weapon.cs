@@ -16,9 +16,8 @@ namespace Game
 
         public void Shoot(Vector3 direction)
         {
-            if (_bullet != null)
+            if (_bullet != null) // don't shoot if there is another instance
                 return;
-
             _bullet = Instantiate(PrefabLaserBullet);
             _bullet.Init(Board, transform.position, BulletSpeed);
         }

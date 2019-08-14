@@ -1,25 +1,28 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
+namespace Game
 {
-    private int _configIndex;
-    public List<BalanceConfig> Configs;
-
-    public void ResetProgression()
+    public class LevelManager : MonoBehaviour
     {
-        _configIndex = 0;
-    }
+        private int _configIndex;
+        public List<BalanceConfig> Configs;
 
-    public BalanceConfig GetNext()
-    {
-        var cfg = Configs[_configIndex++];
-        _configIndex = Mathf.Clamp(_configIndex, 0, Configs.Count - 1);
-        return cfg;
-    }
+        public void ResetProgression()
+        {
+            _configIndex = 0;
+        }
 
-    public int GetCurrentLevelIndex()
-    {
-        return _configIndex;
+        public BalanceConfig GetNext()
+        {
+            var cfg = Configs[_configIndex++];
+            _configIndex = Mathf.Clamp(_configIndex, 0, Configs.Count - 1);
+            return cfg;
+        }
+
+        public int GetCurrentLevelIndex()
+        {
+            return _configIndex;
+        }
     }
 }

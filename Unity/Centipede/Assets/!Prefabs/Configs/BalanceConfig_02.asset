@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: BalanceConfig_02
   m_EditorClassIdentifier: 
   GridSize: {x: 18, y: 18}
-  ActiveAreaOffsetPercent: 0.259
-  MushroomsAmount: 65
+  ActiveAreaOffsetPercent: 0.289
+  MushroomsAmount: 45
   MushroomsHitpoints: 4
   PlayerSpeed: 1
-  PlayerBulletSpeed: 6
-  CentipedeSegmentsAmount: 12
-  CentipedeStepDelay: 0.25
-  SpiderStepDelay: 0
-  NextSpiderTimeout: 5
+  PlayerBulletSpeed: 2.75
+  CentipedeSegmentsAmount: 14
+  CentipedeStepDelay: 0.2
+  SpiderStepDelay: 0.2
+  NextSpiderTimeout: 7

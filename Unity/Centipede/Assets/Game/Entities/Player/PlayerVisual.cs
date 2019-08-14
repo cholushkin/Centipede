@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
 
-public class PlayerVisual : MonoBehaviour
+namespace Game
 {
-    public GameObject PrefabExplosion;
-
-    public void PlayDead()
+    public class PlayerVisual : MonoBehaviour
     {
-        GetComponent<SpriteRenderer>().enabled = false;
-        DoExplosion(transform.position);
-    }
+        public GameObject PrefabExplosion;
 
-    private void DoExplosion( Vector3 at)
-    {
-        var explosion = Instantiate(PrefabExplosion);
-        explosion.transform.position = at;
-        Destroy(explosion, 2f);
+        public void PlayDead()
+        {
+            GetComponent<SpriteRenderer>().enabled = false;
+            DoExplosion(transform.position);
+        }
+
+        private void DoExplosion(Vector3 at)
+        {
+            var explosion = Instantiate(PrefabExplosion);
+            explosion.transform.position = at;
+            Destroy(explosion, 2f);
+        }
     }
 }

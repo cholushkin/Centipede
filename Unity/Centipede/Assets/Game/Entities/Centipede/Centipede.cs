@@ -9,13 +9,14 @@ namespace Game
         {
             public bool IsHead;
         }
+
         public class EventCentipedeKilled
         {
         }
 
         public class Segment
         {
-            public Segment(Centipede centipede, Vector2Int pos, Segment nextSegment)
+            internal Segment(Centipede centipede, Vector2Int pos, Segment nextSegment)
             {
                 _centipede = centipede;
                 _visualSegment = _centipede.Visual.CreateVisualSegment(nextSegment == null);
@@ -26,7 +27,7 @@ namespace Game
                 Prev = null;
             }
 
-            public void SetBoardPosition(Vector2Int pos, bool removePrev)
+            internal void SetBoardPosition(Vector2Int pos, bool removePrev)
             {
                 if (removePrev)
                     _centipede.Board.CellAccessor.Set(_boardPos, null);
@@ -37,17 +38,17 @@ namespace Game
                 _centipede.Board.CellAccessor.Set(pos, _centipede);
             }
 
-            public Vector2Int GetBoardPosition()
+            internal Vector2Int GetBoardPosition()
             {
                 return _boardPos;
             }
 
-            public GameObject GetVisualSegment() // todo: VisualSegment script
+            internal GameObject GetVisualSegment()
             {
                 return _visualSegment;
             }
 
-            public void Disconnet()
+            internal void Disconnet()
             {
                 var pSeg = Prev;
                 var nSeg = Next;
@@ -58,7 +59,7 @@ namespace Game
                     nSeg.Prev = null;
             }
 
-            public void Insert(Segment newEntry)
+            internal void Insert(Segment newEntry)
             {
                 Segment oldPrev = Prev;
                 if (oldPrev != null)
@@ -68,19 +69,19 @@ namespace Game
                 newEntry.Prev = oldPrev;
             }
 
-            public void Die()
+            internal void Die()
             {
                 _centipede.Board.CellAccessor.Set(_boardPos, null);
                 Destroy(_visualSegment);
             }
 
-            public void SetOwnerCentipede(Centipede centipede)
+            internal void SetOwnerCentipede(Centipede centipede)
             {
                 _centipede = centipede;
             }
 
-            public Segment Prev; // moving to the tail
-            public Segment Next; // moving to the head
+            public Segment Prev { get; private set; } // moving to the tail
+            public Segment Next { get; private set; } // moving to the head
             private Vector2Int _boardPos;
             private readonly GameObject _visualSegment;
             private Centipede _centipede;
@@ -91,7 +92,7 @@ namespace Game
         private Vector2Int _lastHorizontalDirection; // last direction took in horizontal plane
         private Vector2Int _lastVerticalDirection; // last direction took in vertical plane
 
-        private float _speed;
+        private float _stepDelay;
         private int _maxTopY; // active level area (same as for the player)
         private Segment _head;
         private Segment _tail;
@@ -100,84 +101,108 @@ namespace Game
         private int _waitCounter;
         private int _vertStepsCount;
         private bool _isKilled;
-        private static readonly int WaitStepsMax = 10;
+        private static readonly int WaitStepsMax = 8; // steps amount in the stuck state before trying to resolve it
 
-
-        void Update()
+        private void Update()
         {
             // centipede thinking
             _currentStepCooldown -= Time.deltaTime;
             if (_currentStepCooldown < 0f)
             {
-                _currentStepCooldown = _speed; // wait for next step
+                _currentStepCooldown = _stepDelay; // wait for next step
 
                 // do step
                 var dest = StepHorizOrVert();
                 if (dest == _boardPosition)
                 {
-                    ++_waitCounter; // we are stuck, wait for a few steps and eat the way out
-                    Debug.LogFormat("{0}:waiting.{1} at {2}", name, _waitCounter, _boardPosition);
+                    ++_waitCounter; // we are stuck, wait for a several steps and eat the way out
                     return;
                 }
                 MoveOneStep(dest);
             }
-
-            //// todo: remove me, dbg
-            //if (Input.GetKeyDown(KeyCode.Alpha1))
-            //    ApplyDamage(1f, _head.GetBoardPosition());
-            //if (Input.GetKeyDown(KeyCode.Alpha2))
-            //{
-            //    var pointer = _head;
-            //    var cnt = 2;
-            //    while (pointer != null) // find injured segment and split
-            //    {
-            //        ++cnt;
-            //        pointer = pointer.Prev;
-            //    }
-            //    cnt = cnt / 2;
-            //    pointer = _head;
-            //    while (pointer != null) // find injured segment and split
-            //    {
-            //        --cnt;
-            //        if (cnt < 0)
-            //        {
-            //            Debug.Log("Debug damage in the midle");
-            //            ApplyDamage(1f, pointer.GetBoardPosition());
-            //            break;
-            //        }
-            //        pointer = pointer.Prev;
-            //    }
-            //}
-            //if (Input.GetKeyDown(KeyCode.Alpha3))
-            //    ApplyDamage(1f, _tail.GetBoardPosition());
         }
 
         public void OnDestroy()
         {
-            if(_isKilled)
+            if (_isKilled)
                 GlobalEventAggregator.EventAggregator.Publish(new EventCentipedeKilled());
+        }
+
+        public void Init(float speed, int segmentsAmount, Vector2Int pos, BoardController board)
+        {
+            _lastHorizontalDirection = Vector2Int.right;
+            _lastVerticalDirection = Vector2Int.down;
+            _vertStepsCount = 0;
+            Board = board;
+            _direction = Vector2Int.down;
+            _stepDelay = speed;
+            _currentStepCooldown = _stepDelay;
+            CreateSegments(segmentsAmount, pos);
+        }
+
+        // for split init
+        public void Init(float speed, Segment head, Segment tail, BoardController board, Vector2Int moveDirection)
+        {
+            Assert.IsNotNull(head);
+            Assert.IsNotNull(tail);
+            _lastHorizontalDirection = Vector2Int.right;
+            _lastVerticalDirection = moveDirection;
+            _vertStepsCount = 0;
+            Board = board;
+            _direction = Vector2Int.down;
+            _stepDelay = speed;
+            _currentStepCooldown = _stepDelay;
+
+            // reuse segments of the host snake
+            _boardPosition = head.GetBoardPosition();
+            _head = head;
+            _tail = tail;
+            _head.GetVisualSegment().GetComponent<SpriteRenderer>().sprite =
+                Visual.MultiSprite.GetSprite(0); // set head sprite
+
+            // set new owner to the board + change parent of visual segments
+            var pointer = _head;
+            while (pointer != null)
+            {
+                pointer.SetOwnerCentipede(this);
+                pointer.SetBoardPosition(pointer.GetBoardPosition(), false);
+                pointer.GetVisualSegment().transform.SetParent(Visual.transform);
+                pointer = pointer.Prev;
+            }
+        }
+
+        public void SetActiveArea(int maxTopY)
+        {
+            _maxTopY = maxTopY;
+        }
+
+        private void CreateSegments(int segmentsAmount, Vector2Int headPosition)
+        {
+            Segment segment = null;
+            for (int i = 0; i < segmentsAmount; i++)
+            {
+                segment = new Segment(this, headPosition + Vector2Int.up * i, segment);
+                if (i == 0)
+                    _head = segment;
+                if (i == segmentsAmount - 1)
+                    _tail = segment;
+            }
+            _boardPosition = headPosition;
         }
 
         public void ApplyDamage(float damage, Vector2Int boardPosition)
         {
-            //Debug.LogFormat("Damage {0} ->SPLITTING ", boardPosition);
-            //DbgPrintState();
             Split(boardPosition);
-
-            // spawn mushroom
             StateGameplay.Instance.Level.SpawnMushroom(boardPosition);
         }
 
-        public void Split(Vector2Int boardPosition)
+        private void Split(Vector2Int boardPosition)
         {
             var pointer = _head;
-            //Debug.Log("looking for>>>" + boardPosition);
-            while (pointer != null) // find injured segment and split
+            while (pointer != null) // find split point segment and split
             {
-                //Debug.Log(pointer.GetBoardPosition());
                 if (pointer.GetBoardPosition() == boardPosition) // found
                 {
-                    //Debug.Log("found");
                     var tailOfSnake2 = _tail;
                     _tail = pointer.Next;
                     var headOfSnake2 = pointer.Prev;
@@ -190,11 +215,10 @@ namespace Game
                     if (_tail == null) // split point is the head of the snake
                     {
                         Destroy(gameObject);
-                        _isKilled = true;
+                        _isKilled = true; // killed but not destroyed by purging
                     }
 
                     GlobalEventAggregator.EventAggregator.Publish(new EventDestroyCentipedeSegment { IsHead = _tail == null });
-
                     return;
                 }
                 pointer = pointer.Prev;
@@ -202,6 +226,14 @@ namespace Game
             Assert.IsTrue(false);
         }
 
+        private void Eat(Vector2Int dest)
+        {
+            var cell = Board.CellAccessor.Get(dest);
+            Assert.IsTrue(cell.CellType != GameConstants.CellType.Empty);
+            cell.Entity.Remove();
+        }
+
+        #region AI
         private Vector2Int StepHorizOrVert() // returns next step destination coordinates or current coordinates if the centipede have to wait
         {
             var destination = _boardPosition + _lastHorizontalDirection;
@@ -217,7 +249,6 @@ namespace Game
 
             if (dc.CellType == GameConstants.CellType.Empty)
                 return destination;
-
             if (dc.CellType == GameConstants.CellType.Player)
             {
                 Eat(destination);
@@ -225,26 +256,22 @@ namespace Game
             }
 
             var vertDest = StepVert();
-            if (vertDest == _boardPosition
-            ) // Same position == wait. Is there on horiz plane something that we can do to avoid waiting
+            if (vertDest == _boardPosition) // Same position == wait. Is there on horiz plane something that we can do to avoid waiting
             {
-                //Debug.Log("avoid waiting? >>>");
+                // avoid waiting?
                 if (dc.CellType == GameConstants.CellType.Mushroom) // mushroom on the way
                 {
                     Eat(destination);
                     return destination;
                 }
-                // todo:
-                // stuck: mushroom on left or on right, but we are moving vertically (could happen on the edge of the active zone)
-                //if (_waitCounter >= WaitStepsMax) // we wait too long do something more dangerous
-                // eat sentipede (split)
-                // eat spider
-
+                if (_waitCounter > WaitStepsMax)
+                {
+                    return ResolveStuck();
+                }
             }
             else // moved to vert direction successfully
-            {
                 return vertDest;
-            }
+
             return _boardPosition;
         }
 
@@ -270,6 +297,36 @@ namespace Game
                 Eat(destination);
                 return destination;
             }
+
+            return _boardPosition;
+        }
+
+        private readonly Vector2Int[] _directions = { Vector2Int.left, Vector2Int.right, Vector2Int.down, Vector2Int.up };
+        private Vector2Int ResolveStuck()
+        {
+            for (int i = 0; i < 4; ++i)
+            {
+                var checkPos = _boardPosition + _directions[i];
+                if (checkPos != _boardPosition - _direction) // if it is not oposite direction
+                {
+                    var cell = Board.CellAccessor.Get(checkPos);
+                    if (cell.CellType == GameConstants.CellType.Centipede) // we eat other centipede or self o_O
+                    {
+                        Debug.Log("EAT centipede in STUCK");
+                        var cent = cell.Entity as Centipede;
+                        Assert.IsNotNull(cent);
+                        cent.Split(checkPos);
+                        return _boardPosition;
+                    }
+                    if (cell.CellType == GameConstants.CellType.Mushroom)
+                    {
+                        Debug.Log("EAT Mushrom in STUCK");
+                        Eat(checkPos);
+                        return checkPos;
+                    }
+                    // also we could eat spider here...
+                }
+            }
             return _boardPosition;
         }
 
@@ -291,76 +348,7 @@ namespace Game
             _waitCounter = 0;
             SetBoardPosition(dest);
         }
-
-        private void Eat(Vector2Int dest)
-        {
-            var cell = Board.CellAccessor.Get(dest);
-            Assert.IsTrue(cell.CellType != GameConstants.CellType.Empty);
-            Debug.LogFormat("{0}: ate {1} at {2}", name, cell.CellType, dest);
-            cell.Entity.Remove();
-        }
-
-        public void Init(float speed, Segment head, Segment tail, BoardController board, Vector2Int moveDirection)
-        {
-            Assert.IsNotNull(head);
-            Assert.IsNotNull(tail);
-            _lastHorizontalDirection = Vector2Int.right;
-            _lastVerticalDirection = moveDirection;
-            _vertStepsCount = 0;
-            Board = board;
-            _direction = Vector2Int.down;
-            _speed = speed;
-            _currentStepCooldown = _speed;
-
-            // reuse segments of host snake
-            _boardPosition = head.GetBoardPosition();
-            _head = head;
-            _tail = tail;
-            _head.GetVisualSegment().GetComponent<SpriteRenderer>().sprite =
-                Visual.MultiSprite.GetSprite(0); // set head sprite
-
-            // set new owner to the board + change parent of visual segments
-            var pointer = _head;
-            while (pointer != null)
-            {
-                pointer.SetOwnerCentipede(this);
-                pointer.SetBoardPosition(pointer.GetBoardPosition(), false);
-                pointer.GetVisualSegment().transform.SetParent(Visual.transform);
-                pointer = pointer.Prev;
-            }
-        }
-
-        public void Init(float speed, int segmentsAmount, Vector2Int pos, BoardController board)
-        {
-            _lastHorizontalDirection = Vector2Int.right;
-            _lastVerticalDirection = Vector2Int.down;
-            _vertStepsCount = 0;
-            Board = board;
-            _direction = Vector2Int.down;
-            _speed = speed;
-            _currentStepCooldown = _speed;
-            CreateSegments(segmentsAmount, pos);
-        }
-
-        public void SetActiveArea(int maxTopY)
-        {
-            _maxTopY = maxTopY;
-        }
-
-        private void CreateSegments(int segmentsAmount, Vector2Int headPosition)
-        {
-            Segment segment = null;
-            for (int i = 0; i < segmentsAmount; i++)
-            {
-                segment = new Segment(this, headPosition + Vector2Int.up * i, segment);
-                if (i == 0)
-                    _head = segment;
-                if (i == segmentsAmount - 1)
-                    _tail = segment;
-            }
-            _boardPosition = headPosition;
-        }
-
+        #endregion
 
         #region BoardEntityBase
         public override void Remove()
@@ -392,7 +380,7 @@ namespace Game
             // set tail segment to old head position
             if (_head != _tail)
             {
-                var twoSegmented = (_head.Prev == _tail);
+                var twoSegmented = _head.Prev == _tail;
                 var newTail = _tail.Next;
                 if (!twoSegmented)
                 {
@@ -400,29 +388,11 @@ namespace Game
                     _head.Insert(_tail);
                 }
                 _tail.SetBoardPosition(_boardPosition, clearPrevPosition);
-                //Board.CellAccessor.Set(_boardPosition, this);
                 if (!twoSegmented)
                     _tail = newTail;
             }
-
             _boardPosition = pos;
         }
         #endregion
-
-
-        //[ContextMenu("DbgPrintState")]
-        //public void DbgPrintState()
-        //{
-        //    var pointer = _head;
-        //    var str = "";
-        //    var cnt = 0;
-        //    while (pointer != null) // find injured segment and split
-        //    {
-        //        str += pointer.GetBoardPosition().ToString() + ", ";
-        //        cnt++;
-        //        pointer = pointer.Prev;
-        //    }
-        //    Debug.LogFormat("Centipede{0}:({1}) {2}", cnt, GetInstanceID(), str);
-        //}
     }
 }

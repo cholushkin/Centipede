@@ -27,7 +27,7 @@ namespace Game
 
         public void PurgeEnemies()
         {
-            // delete old
+            // delete old parent
             Destroy(TransformEnemies.gameObject);
 
             // create new
@@ -41,6 +41,7 @@ namespace Game
             CellAccessor = new CellAccessor(gridSize);
         }
 
+        #if DEBUG_BOARD
         void OnDrawGizmos()
         {
             if (!Application.isPlaying)
@@ -62,9 +63,8 @@ namespace Game
                     Gizmos.DrawCube(new Vector3(x * GameConstants.CellWidth, y * GameConstants.CellHeight, 0),
                         Vector3.one * 0.02f);
                     Handles.color = Color.yellow;
-                    //Handles.Label(new Vector3(x * GameConstants.CellWidth, y * GameConstants.CellHeight, 0),
-                    //    x.ToString() + ":" + y.ToString());
                 }
         }
+        #endif
     }
 }
