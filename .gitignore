@@ -38,3 +38,7 @@ TimeStopJumper/Builds/
 /Builds
 /Art.Src/*.blend1
 /Art.Src/*.blend1
+Unity/Centipede/Logs/
+Unity/Centipede/UserSettings/Layouts/
+Unity/Centipede/.vsconfig
+Unity/Centipede/UserSettings/
