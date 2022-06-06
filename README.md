@@ -12,4 +12,4 @@ This Unity project is a quick remake of the original game. Could be a starting p
 Starting scene is Assets/Game/Scenes/Game.unity
 
 ## Feature requesting:
-:space_invader: 5 stars to add flea monster!
+:space_invader: 5 stars to add a **flea monster**!
