@@ -47,6 +47,12 @@ namespace Utils
             _currentDelay = Frames[frameIndex].Delay;
         }
 
+        public void OnEnable()
+        {
+            if (SpriteRenderer != null)
+                SpriteRenderer.sprite = Frames[_currentFrame].Frame;
+        }
+
         public Sprite GetSprite(int frameIndex)
         {
             return Frames[frameIndex].Frame;

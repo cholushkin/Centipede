@@ -48,11 +48,13 @@ namespace Game
             else if (CurrentState == State.Alive)
             {
                 ProcessInput();
+                Visual.SetFish(!Weapon.IsBulletFlying());
 
                 if (_inputIsShooting)
                 {
                     Assert.IsNotNull(Weapon);
                     Weapon.Shoot(Vector3.up);
+                    Visual.SetFish(!Weapon.IsBulletFlying());
                 }
 
                 _isInjuredDuringMovement = false;

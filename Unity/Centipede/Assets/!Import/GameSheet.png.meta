@@ -347,10 +347,10 @@ TextureImporter:
       name: Player00
       rect:
         serializedVersion: 2
-        x: 41
-        y: 106
-        width: 7
-        height: 10
+        x: 61
+        y: 35
+        width: 16
+        height: 9
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -368,10 +368,10 @@ TextureImporter:
       name: Player01
       rect:
         serializedVersion: 2
-        x: 52
-        y: 106
-        width: 11
-        height: 10
+        x: 83
+        y: 35
+        width: 16
+        height: 9
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -389,10 +389,10 @@ TextureImporter:
       name: Bullet
       rect:
         serializedVersion: 2
-        x: 96
-        y: 80
+        x: 102
+        y: 76
         width: 3
-        height: 5
+        height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -679,6 +679,48 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Player00nf
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 55
+        width: 16
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f67dc833796ab5049a2fe1bfcdee38a0
+      internalID: 433514101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Player01nf
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 55
+        width: 16
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 821e5a58dbada664d87df086764d3c7d
+      internalID: 1014473579
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -698,6 +740,7 @@ TextureImporter:
       WormHead: 21300046
       Cup: 21300004
       ExpYellow02: 21300032
+      Player00nf: 433514101
       Bullet: 21300020
       ExpYellow00: 21300028
       Spider01: 21300042
@@ -711,6 +754,7 @@ TextureImporter:
       Mushroom00: 21300006
       Mushroom04: 21300014
       ExpRed00: 21300022
+      Player01nf: 1014473579
       Mushroom02: 21300010
       ExpGreen01: 21300036
       ExpGreen02: 21300038

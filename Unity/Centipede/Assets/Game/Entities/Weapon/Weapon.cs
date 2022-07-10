@@ -4,7 +4,7 @@ namespace Game
 {
     public interface IWeapon
     {
-        void Shoot(Vector3 direction);
+        bool Shoot(Vector3 direction);
     }
 
     public class Weapon : MonoBehaviour, IWeapon
@@ -14,12 +14,18 @@ namespace Game
         public float BulletSpeed { get; set; }
         private Laser _bullet;
 
-        public void Shoot(Vector3 direction)
+        public bool Shoot(Vector3 direction)
         {
-            if (_bullet != null) // don't shoot if there is another instance
-                return;
+            if (IsBulletFlying()) // don't shoot if there is another instance
+                return false;
             _bullet = Instantiate(PrefabLaserBullet);
             _bullet.Init(Board, transform.position, BulletSpeed);
+            return true;
+        }
+
+        public bool IsBulletFlying()
+        {
+            return (_bullet != null);
         }
     }
 }

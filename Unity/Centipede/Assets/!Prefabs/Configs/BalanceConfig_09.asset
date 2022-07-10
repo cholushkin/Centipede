@@ -17,8 +17,8 @@ MonoBehaviour:
   MushroomsAmount: 200
   MushroomsHitpoints: 4
   PlayerSpeed: 1
-  PlayerBulletSpeed: 2.75
+  PlayerBulletSpeed: 2
   CentipedeSegmentsAmount: 30
   CentipedeStepDelay: 0.05
   SpiderStepDelay: 0.14
-  NextSpiderTimeout: 3
+  NextSpiderTimeout: 6
